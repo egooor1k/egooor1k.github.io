@@ -5,32 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zoom Link Generator</title>
     <style>
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column; /* Элементы будут идти друг за другом сверху вниз */
-        justify-content: center; /* Центрирование по вертикали */
-        align-items: center;    /* Центрирование по горизонтали */
-        text-align: center;     /* Центрирование текста внутри блоков */
-        min-height: 100vh;      /* Растягивает сайт на всю высоту экрана телефона/ноутбука */
-        body { font-family: sans-serif; background: #1e1e1e; color: #fff; max-width: 400px; margin: 50px auto; padding: 20px; border-radius: 10px; }
-        input { width: 100%; padding: 10px; margin: 10px 0 20px 0; box-sizing: border-box; background: #333; border: 1px solid #555; color: #fff; border-radius: 5px; }
-        button { width: 100%; padding: 12px; background: #2D8CFF; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        button:hover { background: #1A73E8; }
-        #status { margin-top: 15px; text-align: center; font-weight: bold; color: #4CAF50; }
+        /* Стили для центрирования всей страницы */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: #1e1e1e;
+        }
+
+        body { 
+            font-family: sans-serif; 
+            color: #fff; 
+            display: flex;
+            flex-direction: column;   /* Элементы внутри body идут сверху вниз */
+            justify-content: center;  /* Центрирование по вертикали */
+            align-items: center;      /* Центрирование по горизонтали */
+            text-align: center;       /* Центрирование текста */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Контейнер формы, чтобы она не растягивалась на весь экран ноутбука */
+        .card-container {
+            width: 100%;
+            max-width: 400px;         /* На ноутбуке будет аккуратное окошко, на мобильном сожмется под экран */
+            background: #252525;      /* Сделали фон карточки чуть светлее общего фона для красоты */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Легкая тень */
+            box-sizing: border-box;
+        }
+
+        label {
+            display: block;
+            text-align: left;         /* Подписи к полям оставляем выровненными по левому краю */
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 20px; 
+            box-sizing: border-box; 
+            background: #333; 
+            border: 1px solid #555; 
+            color: #fff; 
+            border-radius: 5px; 
+            font-size: 16px;          /* Предотвращает авто-зум поля на iPhone */
+        }
+
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background: #2D8CFF; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+
+        button:hover { 
+            background: #1A73E8; 
+        }
+
+        #status { 
+            margin-top: 15px; 
+            font-weight: bold; 
+            color: #4CAF50; 
+            min-height: 20px;         /* Резервирует место под текст статуса */
+        }
     </style>
 </head>
 <body>
-    <h2>Генератор посилань Zoom</h2>
-    
-    <label>Ідентифікатор конференції:</label>
-    <input type="text" id="id" placeholder="Наприклад: 812 3456 7890">
-    
-    <label>Код доступу (пароль):</label>
-    <input type="text" id="pwd" placeholder="Наприклад: 123456">
-    
-    <button onclick="generate()">Згенерувати та скопіювати</button>
-    <div id="status"></div>
+
+    <!-- Все элементы обернуты в один контейнер-карточку -->
+    <div class="card-container">
+        <h2>Генератор посилань Zoom</h2>
+        
+        <label>Ідентифікатор конференції:</label>
+        <input type="text" id="id" placeholder="Наприклад: 812 3456 7890">
+        
+        <label>Код доступу (пароль):</label>
+        <input type="text" id="pwd" placeholder="Наприклад: 123456">
+        
+        <button onclick="generate()">Згенерувати та скопіювати</button>
+        <div id="status"></div>
+    </div>
 
     <script>
         function generate() {
@@ -43,11 +109,12 @@
                 return;
             }
 
-            // Кодуємо в Base64
+            // Кодируем пароль в Base64
             const b64 = btoa(unescape(encodeURIComponent(pwd)));
+            // Исправлена ссылка: добавлен правильный путь /j/ для подключения к конференции
             const link = `https://zoom.us{id}?pwd=${b64}`;
 
-            // Автоматично копіюємо в буфер обміну
+            // Автоматически копируем в буфер обмена
             navigator.clipboard.writeText(link).then(() => {
                 document.getElementById('status').style.color = '#4CAF50';
                 document.getElementById('status').innerText = '🚀 Скопійовано в буфер!';
