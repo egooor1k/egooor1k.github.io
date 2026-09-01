@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Zoom Link Generator</title>
+    <style>
+        body { font-family: sans-serif; background: #1e1e1e; color: #fff; max-width: 400px; margin: 50px auto; padding: 20px; border-radius: 10px; }
+        input { width: 100%; padding: 10px; margin: 10px 0 20px 0; box-sizing: border-box; background: #333; border: 1px solid #555; color: #fff; border-radius: 5px; }
+        button { width: 100%; padding: 12px; background: #2D8CFF; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        button:hover { background: #1A73E8; }
+        #status { margin-top: 15px; text-align: center; font-weight: bold; color: #4CAF50; }
+    </style>
+</head>
+<body>
+    <h2>Генератор посилань Zoom</h2>
+    
+    <label>Ідентифікатор конференції:</label>
+    <input type="text" id="id" placeholder="Наприклад: 812 3456 7890">
+    
+    <label>Код доступу (пароль):</label>
+    <input type="text" id="pwd" placeholder="Наприклад: 123456">
+    
+    <button onclick="generate()">Згенерувати та скопіювати</button>
+    <div id="status"></div>
+
+    <script>
+        function generate() {
+            const id = document.getElementById('id').value.replace(/\s+/g, '');
+            const pwd = document.getElementById('pwd').value;
+            
+            if(!id || !pwd) {
+                document.getElementById('status').style.color = '#ff3333';
+                document.getElementById('status').innerText = 'Заповніть усі поля!';
+                return;
+            }
+
+            // Кодуємо в Base64
+            const b64 = btoa(unescape(encodeURIComponent(pwd)));
+            const link = `https://zoom.us{id}?pwd=${b64}`;
+
+            // Автоматично копіюємо в буфер обміну
+            navigator.clipboard.writeText(link).then(() => {
+                document.getElementById('status').style.color = '#4CAF50';
+                document.getElementById('status').innerText = '🚀 Скопійовано в буфер!';
+            }).catch(() => {
+                document.getElementById('status').innerHTML = `Клікніть для копіювання: <a href="${link}" target="_blank" style="color:#2D8CFF">${link}</a>`;
+            });
+        }
+    </script>
+</body>
+</html>
