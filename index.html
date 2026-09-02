@@ -7,108 +7,122 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: #1c1c1d;
-            --container-bg: #2c2c2e;
-            --text-color: #ffffff;
-            --input-bg: #3a3a3c;
-            --input-border: #48484a;
-            --accent-color: #0a84ff;
-            --button-text: #ffffff;
-            --secondary-text: #8e8e93;
+            --bg-color: #17212b;
+            --container-bg: #242f3d;
+            --text-color: #f5f5f5;
+            --input-bg: #1d2733;
+            --input-border: #303d4d;
+            --accent-color: #2ea6ff;
+            --secondary-text: #708499;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
         }
 
         .container {
-            width: 100%;
-            max-width: 400px;
+            width: 90%;
+            max-width: 360px;
             background: var(--container-bg);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
 
-        h2 { text-align: center; margin-top: 0; color: var(--accent-color); font-size: 24px; margin-bottom: 25px; }
+        h2 { text-align: center; margin-top: 0; color: var(--text-color); font-size: 20px; margin-bottom: 20px; }
 
-        .input-group { margin-bottom: 20px; }
+        .input-group { margin-bottom: 18px; }
 
-        label { display: block; margin-bottom: 8px; font-size: 14px; color: var(--secondary-text); }
+        label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--secondary-text); padding-left: 4px; }
 
         input {
             width: 100%;
-            padding: 14px;
+            padding: 12px 15px;
             border: 1px solid var(--input-border);
-            border-radius: 12px;
+            border-radius: 10px;
             box-sizing: border-box;
             background: var(--input-bg);
             color: var(--text-color);
             font-size: 16px;
             outline: none;
+            transition: border-color 0.2s;
         }
+
+        input:focus { border-color: var(--accent-color); }
 
         /* Убираем стрелочки */
         input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
+        input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
 
-        button {
+        .main-btn {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             background-color: var(--accent-color);
-            color: var(--button-text);
+            color: #fff;
             border: none;
-            border-radius: 14px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 15px;
+            margin-top: 10px;
         }
 
         .result {
-            margin-top: 25px;
+            margin-top: 20px;
             padding: 15px;
             background: var(--input-bg);
-            border-radius: 12px;
+            border-radius: 10px;
             display: none;
-            border: 1px dashed var(--input-border);
+            text-align: center;
         }
 
-        .result-label { font-size: 12px; color: var(--secondary-text); margin-bottom: 8px; display: block; }
-
-        .link-text {
+        .link-display {
+            font-size: 12px;
+            color: var(--accent-color);
             word-break: break-all;
-            font-size: 13px;
-            color: #58a6ff;
-            font-family: monospace;
             display: block;
             margin-bottom: 15px;
+            background: rgba(46, 166, 255, 0.1);
+            padding: 8px;
+            border-radius: 6px;
         }
 
-        .copy-btn {
-            background: #32d74b;
+        .btn-row { display: flex; gap: 10px; }
+        
+        .sub-btn {
+            flex: 1;
             padding: 10px;
-            font-size: 14px;
-            border-radius: 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .copy { background: #31b545; color: white; }
+        .open { background: #2ea6ff; color: white; }
+
+        .info {
+            font-size: 11px;
+            color: var(--secondary-text);
+            margin-top: 15px;
+            text-align: center;
+            line-height: 1.4;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Zoom Generator</h2>
+    <h2>Zoom Быстрый Вход</h2>
     
     <div class="input-group">
         <label>ID конференции</label>
@@ -117,68 +131,47 @@
 
     <div class="input-group">
         <label>Пароль (код доступа)</label>
-        <input type="text" id="password" placeholder="Введите пароль">
+        <input type="text" id="password" placeholder="Пароль">
     </div>
 
-    <button onclick="generateZoomLink()">Сгенерировать ссылку</button>
+    <button class="main-btn" onclick="generate()">Создать быструю ссылку</button>
 
     <div id="resultBox" class="result">
-        <span class="result-label">Готовая HTTPS ссылка:</span>
-        <span id="generatedLink" class="link-text"></span>
-        <button class="copy-btn" onclick="copyLink()">Копировать</button>
+        <span class="link-display" id="linkTxt"></span>
+        <div class="btn-row">
+            <button class="sub-btn copy" onclick="copy()">Копировать</button>
+            <button class="sub-btn open" id="joinBtn">Войти сейчас</button>
+        </div>
     </div>
+
+    <p class="info">Эта ссылка автоматически откроет приложение Zoom и введет пароль за вас.</p>
 </div>
 
 <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
-    tg.setHeaderColor('#1c1c1d');
 
-    // Функция для создания Zoom-хеша пароля
-    async function generateZoomHash(password) {
-        // 1. Кодируем пароль в UTF-8
-        const msgUint8 = new TextEncoder().encode(password);
-        // 2. Хешируем через SHA-256
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-        // 3. Переводим в Base64
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashString = String.fromCharCode.apply(null, hashArray);
-        return window.btoa(hashString);
-    }
-
-    async function generateZoomLink() {
+    function generate() {
         const id = document.getElementById('meetingId').value.trim();
         const pwd = document.getElementById('password').value.trim();
 
         if (!id || !pwd) {
-            alert("Введите ID и Пароль");
+            alert("Заполните все поля");
             return;
         }
 
-        try {
-            // Генерируем хеш пароля
-            const pwdHash = await generateZoomHash(pwd);
-            
-            // Формируем финальную ссылку
-            // Очищаем хеш от символов, которые могут мешать в URL (Zoom это делает)
-            const finalHash = pwdHash.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-            
-            const link = `https://zoom.us/j/${id}?pwd=${pwdHash}`;
-            
-            document.getElementById('generatedLink').innerText = link;
-            document.getElementById('resultBox').style.display = 'block';
-        } catch (e) {
-            console.error(e);
-            alert("Ошибка при генерации хеша");
-        }
+        // Это ЕДИНСТВЕННЫЙ формат, который принимает чистый пароль
+        const appLink = `zoommtg://zoom.us/join?confno=${id}&pwd=${encodeURIComponent(pwd)}`;
+        
+        document.getElementById('linkTxt').innerText = appLink;
+        document.getElementById('joinBtn').onclick = () => { window.location.href = appLink; };
+        document.getElementById('resultBox').style.display = 'block';
     }
 
-    function copyLink() {
-        const linkText = document.getElementById('generatedLink').innerText;
-        navigator.clipboard.writeText(linkText).then(() => {
-            if (tg.showAlert) tg.showAlert("Ссылка скопирована!");
-            else alert("Скопировано!");
-        });
+    function copy() {
+        const text = document.getElementById('linkTxt').innerText;
+        navigator.clipboard.writeText(text);
+        if(tg.showAlert) tg.showAlert("Ссылка скопирована!");
     }
 </script>
 
